@@ -1,0 +1,52 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-22.04, name: linux-x64 }
+          - { os: macos-latest, name: macos-arm64 }
+          - { os: windows-latest, name: windows-x64 }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install . pyinstaller
+          python -m PyInstaller --noconfirm --name yuri4iPhone --windowed \
+            --collect-all pymobiledevice3 --collect-submodules yuri \
+            --add-data "yuri/web:yuri/web" \
+            yuri/launcher.py
+      - name: Package
+        shell: bash
+        working-directory: dist
+        run: |
+          if [ "$RUNNER_OS" = "macOS" ]; then ditto -c -k --keepParent yuri4iPhone.app ../yuri4iPhone-${{ matrix.name }}.zip
+          elif [ "$RUNNER_OS" = "Windows" ]; then 7z a ../yuri4iPhone-${{ matrix.name }}.zip yuri4iPhone
+          else tar czf ../yuri4iPhone-${{ matrix.name }}.tar.gz yuri4iPhone; fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: yuri4iPhone-${{ matrix.name }}
+          path: yuri4iPhone-*
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: yuri4iPhone-*
+          prerelease: true

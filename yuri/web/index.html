@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>yuri4iPhone</title>
+<link rel="icon" href="/static/icon.svg">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <div class="brand"><img src="/static/icon.svg" alt=""><span>yuri<b>4</b>iPhone</span></div>
+    <nav>
+      <button class="nav on" data-view="dash"><span class="ni">📱</span><span data-t="navDash"></span></button>
+      <button class="nav" data-view="custom"><span class="ni">✨</span><span data-t="navCustom"></span></button>
+      <button class="nav" data-view="apps"><span class="ni">📦</span><span data-t="navApps"></span></button>
+      <button class="nav" data-view="files"><span class="ni">🗂️</span><span data-t="navFiles"></span></button>
+      <button class="nav" data-view="logs"><span class="ni">📜</span><span data-t="navLogs"></span></button>
+    </nav>
+    <div class="side-foot">
+      <div id="side-device" class="side-device"></div>
+      <div class="langs"><button data-lang="en">EN</button><button data-lang="ru">RU</button><button data-lang="zh">中文</button></div>
+      <a href="https://murk-sus.github.io/donate/" target="_blank" rel="noopener" class="donate">💖 <span data-t="donate"></span></a>
+    </div>
+  </aside>
+
+  <main>
+    <section id="view-dash" class="view on"><header class="vh"><h1 data-t="dashTitle"></h1></header><div id="dash"></div></section>
+
+    <section id="view-custom" class="view">
+      <header class="vh"><h1 data-t="customTitle"></h1><p class="muted" data-t="customSub"></p></header>
+      <div id="custom-banner"></div>
+      <div id="custom-grid" class="tool-grid"></div>
+    </section>
+
+    <section id="view-apps" class="view">
+      <header class="vh"><h1 data-t="navApps"></h1>
+        <div class="row-inline">
+          <button class="chip-btn on" data-kind="User" data-t="userApps"></button>
+          <button class="chip-btn" data-kind="System" data-t="systemApps"></button>
+          <label class="installbtn"><span data-t="installIpa"></span><input id="ipa-input" type="file" accept=".ipa,.tipa" hidden></label>
+        </div>
+      </header>
+      <input id="apps-search" class="search" data-tp="search">
+      <div id="job" class="card job" hidden></div>
+      <div id="apps-list" class="apps"></div>
+    </section>
+
+    <section id="view-files" class="view">
+      <header class="vh"><h1 data-t="navFiles"></h1><p class="muted" data-t="filesSub"></p></header>
+      <div id="crumbs" class="crumbs"></div>
+      <div id="files-list" class="files"></div>
+    </section>
+
+    <section id="view-logs" class="view">
+      <header class="vh"><h1 data-t="navLogs"></h1>
+        <div class="row-inline">
+          <button id="log-toggle" class="chip-btn" data-t="startLog"></button>
+          <input id="log-filter" class="search" data-tp="logFilter">
+          <button id="log-clear" class="chip-btn" data-t="clear"></button>
+        </div>
+      </header>
+      <div id="logs" class="logs"></div>
+    </section>
+  </main>
+</div>
+<div id="toast" class="toast" hidden></div>
+<dialog id="prompt"><form method="dialog"><h3 id="prompt-title"></h3><input id="prompt-input" autocomplete="off"><menu><button value="cancel" data-t="cancel"></button><button value="ok" class="primary" data-t="ok"></button></menu></form></dialog>
+<script type="module" src="/static/app.js"></script>
+</body>
+</html>

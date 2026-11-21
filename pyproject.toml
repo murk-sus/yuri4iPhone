@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "yuri4iphone"
+version = "0.1.0"
+description = "A friendly iPhone toolbox for the desktop — like 3uTools, but open, cross-platform and cute."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+dependencies = ["aiohttp>=3.9", "pymobiledevice3>=4"]
+
+[project.optional-dependencies]
+window = ["pywebview>=5"]
+
+[project.scripts]
+yuri4iphone = "yuri.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["yuri*"]
+
+[tool.setuptools.package-data]
+yuri = ["web/*"]
