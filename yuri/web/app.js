@@ -372,6 +372,22 @@ $("#log-toggle").addEventListener("click", () => {
 });
 $("#log-clear").addEventListener("click", () => ($("#logs").innerHTML = ""));
 
+
+// ---------- theme ----------
+const THEMES = ["auto", "light", "dark"];
+const THEME_IC = { auto: "◐ Auto", light: "☀ Light", dark: "☾ Dark" };
+let themeMode = (() => { try { return localStorage.getItem("yuritheme"); } catch { return null; } })() || "auto";
+function applyTheme() {
+  if (themeMode === "auto") document.documentElement.removeAttribute("data-theme");
+  else document.documentElement.setAttribute("data-theme", themeMode);
+  const ic = document.getElementById("theme-ic"); if (ic) ic.textContent = THEME_IC[themeMode];
+  try { localStorage.setItem("yuritheme", themeMode); } catch {}
+}
+document.getElementById("theme-btn")?.addEventListener("click", () => {
+  themeMode = THEMES[(THEMES.indexOf(themeMode) + 1) % THEMES.length]; applyTheme();
+});
+applyTheme();
+
 // ---------- boot ----------
 $("#dash-refresh").addEventListener("click", refresh);
 applyLang();
