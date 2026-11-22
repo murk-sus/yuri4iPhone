@@ -51,4 +51,6 @@ Because the tool should pick the right thing *for* you. Part of murk's iOS toolk
 
 Free and MIT licensed. If it saved you time: **[donate page with QR codes](https://murk-sus.github.io/donate/)** (USDT TRC20, TON, BTC, ETH, SOL) · Telegram [@jailbreak_IOS_and_tweaks](https://t.me/jailbreak_IOS_and_tweaks)
 
+The name and purple-and-books look are a nod to Yuri. No artwork from *Doki Doki Literature Club* is used.
+
 MIT © murk. Built on [pymobiledevice3](https://github.com/doronz88/pymobiledevice3). Not affiliated with Apple. "3uTools" is a trademark of its owner; yuri4iPhone is an independent, unrelated project.

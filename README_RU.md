@@ -36,4 +36,6 @@ yuri4iphone
 
 Бесплатно, лицензия MIT. **[Страница донатов с QR](https://murk-sus.github.io/donate/)** (USDT TRC20, TON, BTC, ETH, SOL) · Telegram [@jailbreak_IOS_and_tweaks](https://t.me/jailbreak_IOS_and_tweaks)
 
+Название и фиолетово-книжный стиль — отсылка к Yuri. Арт из *Doki Doki Literature Club* не используется.
+
 MIT © murk. На базе [pymobiledevice3](https://github.com/doronz88/pymobiledevice3). Не связан с Apple и с 3uTools.

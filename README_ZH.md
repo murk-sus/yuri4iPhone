@@ -35,4 +35,6 @@ yuri4iphone
 
 免费，MIT 授权。**[打赏页面（含二维码）](https://murk-sus.github.io/donate/)**（USDT TRC20、TON、BTC、ETH、SOL）
 
+名称与紫色书本风格是向 Yuri 致敬，未使用 *Doki Doki Literature Club* 的任何美术素材。
+
 MIT © murk。基于 [pymobiledevice3](https://github.com/doronz88/pymobiledevice3)。与 Apple、3uTools 均无关联。
