@@ -2,7 +2,7 @@
 
 const S = {
   en: {
-    navDash: "Device", navCustom: "Customize", navApps: "Apps", navFiles: "Files", navLogs: "Logs", donate: "Support", refresh: "Refresh", appsSeg: "Apps", systemData: "System & data", freeSeg: "Free", topApps: "Largest apps", region: "Region", build: "Build",
+    navDash: "Device", navCustom: "Customize", navApps: "Apps", navFiles: "Files", navLogs: "Logs", donate: "Support", refresh: "Refresh", themeSystem: "Auto", themeLight: "Light", themeBlack: "Black", appsSeg: "Apps", systemData: "System & data", freeSeg: "Free", topApps: "Largest apps", region: "Region", build: "Build",
     dashTitle: "Device", customTitle: "Customize", customSub: "yuri picks the tools that work on your iPhone right now.",
     noDevice: "No iPhone found. Connect it with a cable, unlock it and tap Trust.",
     model: "Model", ios: "iOS", storage: "Storage", battery: "Battery", cycles: "Battery cycles", serial: "Serial",
@@ -29,7 +29,7 @@ const S = {
     t_sources: "Tweak sources", t_sources_d: "Open the SayoSign tweak repo.",
   },
   ru: {
-    navDash: "Устройство", navCustom: "Кастомизация", navApps: "Приложения", navFiles: "Файлы", navLogs: "Логи", donate: "Поддержать", refresh: "Обновить", appsSeg: "Приложения", systemData: "Система и данные", freeSeg: "Свободно", topApps: "Самые большие", region: "Регион", build: "Сборка",
+    navDash: "Устройство", navCustom: "Кастомизация", navApps: "Приложения", navFiles: "Файлы", navLogs: "Логи", donate: "Поддержать", refresh: "Обновить", themeSystem: "Авто", themeLight: "Светлая", themeBlack: "Чёрная", appsSeg: "Приложения", systemData: "Система и данные", freeSeg: "Свободно", topApps: "Самые большие", region: "Регион", build: "Сборка",
     dashTitle: "Устройство", customTitle: "Кастомизация", customSub: "yuri сам подбирает инструменты, которые работают на твоём айфоне прямо сейчас.",
     noDevice: "Айфон не найден. Подключи кабелем, разблокируй и нажми «Доверять».",
     model: "Модель", ios: "iOS", storage: "Память", battery: "Батарея", cycles: "Циклы батареи", serial: "Серийный номер",
@@ -56,7 +56,7 @@ const S = {
     t_sources: "Источники твиков", t_sources_d: "Открыть репозиторий твиков SayoSign.",
   },
   zh: {
-    navDash: "设备", navCustom: "自定义", navApps: "应用", navFiles: "文件", navLogs: "日志", donate: "支持", refresh: "刷新", appsSeg: "应用", systemData: "系统与数据", freeSeg: "可用", topApps: "最大的应用", region: "地区", build: "版本号",
+    navDash: "设备", navCustom: "自定义", navApps: "应用", navFiles: "文件", navLogs: "日志", donate: "支持", refresh: "刷新", themeSystem: "自动", themeLight: "浅色", themeBlack: "黑色", appsSeg: "应用", systemData: "系统与数据", freeSeg: "可用", topApps: "最大的应用", region: "地区", build: "版本号",
     dashTitle: "设备", customTitle: "自定义", customSub: "yuri 会自动挑选当前 iPhone 可用的工具。",
     noDevice: "未找到 iPhone。请用数据线连接、解锁并点击“信任”。",
     model: "型号", ios: "iOS", storage: "存储", battery: "电池", cycles: "电池循环", serial: "序列号",
@@ -372,24 +372,21 @@ $("#log-toggle").addEventListener("click", () => {
 });
 $("#log-clear").addEventListener("click", () => ($("#logs").innerHTML = ""));
 
-
-// ---------- theme ----------
-const THEMES = ["auto", "light", "dark"];
-const THEME_IC = { auto: "◐ Auto", light: "☀ Light", dark: "☾ Dark" };
-let themeMode = (() => { try { return localStorage.getItem("yuritheme"); } catch { return null; } })() || "auto";
-function applyTheme() {
-  if (themeMode === "auto") document.documentElement.removeAttribute("data-theme");
-  else document.documentElement.setAttribute("data-theme", themeMode);
-  const ic = document.getElementById("theme-ic"); if (ic) ic.textContent = THEME_IC[themeMode];
-  try { localStorage.setItem("yuritheme", themeMode); } catch {}
-}
-document.getElementById("theme-btn")?.addEventListener("click", () => {
-  themeMode = THEMES[(THEMES.indexOf(themeMode) + 1) % THEMES.length]; applyTheme();
-});
-applyTheme();
-
 // ---------- boot ----------
 $("#dash-refresh").addEventListener("click", refresh);
+function applyTheme(mode) {
+  if (mode === "light" || mode === "black") document.documentElement.dataset.theme = mode;
+  else delete document.documentElement.dataset.theme;
+  document.querySelectorAll("[data-theme-set]").forEach((b) => b.classList.toggle("on", b.dataset.themeSet === mode));
+}
+let themeMode = (() => { try { return localStorage.getItem("yuritheme") || "system"; } catch { return "system"; } })();
+document.querySelectorAll("[data-theme-set]").forEach((b) => b.addEventListener("click", () => {
+  themeMode = b.dataset.themeSet;
+  try { localStorage.setItem("yuritheme", themeMode); } catch {}
+  applyTheme(themeMode);
+}));
+applyTheme(themeMode);
+
 applyLang();
 poll();
 setInterval(() => { if (!document.hidden) poll(); }, 5000);

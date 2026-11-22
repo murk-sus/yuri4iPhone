@@ -7,20 +7,13 @@
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0a0b0f; --panel: #121419; --panel-2: #181b22; --ink: #eef0f6; --muted: #8a91a2; --faint: #565d6e;
-    --line: #23262f; --line-2: #1a1d24;
-    --accent: #8a7cf0; --accent-2: #a98cf5; --accent-ink: #0c0a16; --accent-soft: #221d36;
-    --s-apps: #8a7cf0; --s-other: #4a5162; --s-free: #23262f;
+  :root {
+    --bg: #14161d; --panel: #1b1e27; --panel-2: #20242f; --ink: #e8ebf2; --muted: #8b93a4; --faint: #5e6678;
+    --line: #2a2e3a; --line-2: #22262f;
+    --accent: #8a7cf0; --accent-2: #a98cf5; --accent-ink: #12101f; --accent-soft: #241f3c;
+    --s-apps: #8a7cf0; --s-other: #525a6b; --s-free: #2a2e3a;
     color-scheme: dark;
   }
-}
-:root[data-theme="dark"] {
-  --bg: #0a0b0f; --panel: #121419; --panel-2: #181b22; --ink: #eef0f6; --muted: #8a91a2; --faint: #565d6e;
-  --line: #23262f; --line-2: #1a1d24;
-  --accent: #8a7cf0; --accent-2: #a98cf5; --accent-ink: #0c0a16; --accent-soft: #221d36;
-  --s-apps: #8a7cf0; --s-other: #4a5162; --s-free: #23262f;
-  color-scheme: dark;
 }
 * { box-sizing: border-box; }
 html, body { height: 100%; }
@@ -166,3 +159,19 @@ dialog menu button { border: 1px solid var(--line); background: var(--panel); bo
   .hero { grid-template-columns: 1fr; } .hero-phone { border-right: 0; border-bottom: 1px solid var(--line-2); }
   .specs { grid-template-columns: 1fr 1fr; } .statrow { grid-template-columns: 1fr; }
 }
+
+:root[data-theme="light"] {
+  --bg: #eef1f6; --panel: #ffffff; --panel-2: #f7f8fb; --ink: #20242e; --muted: #7b8496; --faint: #aab2c0;
+  --line: #e3e7ee; --line-2: #eef1f6; --accent: #5a4fcf; --accent-2: #8a5cf0; --accent-ink: #ffffff; --accent-soft: #eeebfb;
+  --s-apps: #5a4fcf; --s-other: #8a93a6; --s-free: #e3e7ee; color-scheme: light;
+}
+:root[data-theme="black"] {
+  --bg: #000000; --panel: #0b0b0e; --panel-2: #141418; --ink: #eeeef3; --muted: #8b8b98; --faint: #55555f;
+  --line: #222229; --line-2: #18181d; --accent: #9a8cf5; --accent-2: #b09cf8; --accent-ink: #0e0b1c; --accent-soft: #1b1733;
+  --s-apps: #9a8cf5; --s-other: #4a4a56; --s-free: #222229; color-scheme: dark;
+}
+.themes button { font-size: 11px; }
+:root[data-theme="black"] .pstate.stock, :root[data-theme="black"] .banner.stock { background: #0c2416; border-color: #143a24; }
+:root[data-theme="black"] .pstate.jailbroken, :root[data-theme="black"] .tool .lock { background: #2a2008; }
+:root[data-theme="light"] .pstate.stock, :root[data-theme="light"] .banner.stock { background: #e7f7ee; border-color: #cfeeda; }
+:root[data-theme="light"] .pstate.jailbroken, :root[data-theme="light"] .tool .lock { background: #fff3dd; }
