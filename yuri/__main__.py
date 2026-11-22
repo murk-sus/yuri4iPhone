@@ -49,7 +49,7 @@ def main():
     if webview and not args.no_window:
         threading.Thread(target=lambda: asyncio.run(_serve(app, port)), daemon=True).start()
         webview.create_window("yuri4iPhone", url, width=1200, height=840, min_size=(430, 640))
-        webview.start()
+        webview.start(gui="gtk" if sys.platform.startswith("linux") else None)
         return
 
     print(f"yuri4iPhone is running at {url}")

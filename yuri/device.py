@@ -238,3 +238,27 @@ async def restart(udid):
         await d.restart()
     finally:
         await ld.close()
+
+
+async def storage_breakdown(udid=None):
+    """3uTools-style storage split: apps, system & data, free. App sizes summed live."""
+    ld = await _lockdown(udid)
+    try:
+        total = await ld.get_value("com.apple.disk_usage", "TotalDataCapacity")
+        avail = await ld.get_value("com.apple.disk_usage", "TotalDataAvailable")
+        svc = InstallationProxyService(lockdown=ld)
+        data = await svc.get_apps(application_type="User", calculate_sizes=True)
+        apps = 0
+        top = []
+        for a in data.values():
+            sz = a.get("StaticDiskUsage") or 0  # on-disk install size, excludes purgeable caches
+            apps += sz
+            top.append({"name": a.get("CFBundleDisplayName") or a.get("CFBundleName"), "size": sz})
+        top.sort(key=lambda x: -x["size"])
+        used = (total - avail) if total and avail else 0
+        apps = min(apps, used)
+        other = max(used - apps, 0)
+        return {"total": total, "free": avail, "apps": apps, "other": other,
+                "appCount": len(data), "top": top[:8]}
+    finally:
+        await ld.close()

@@ -2,7 +2,7 @@
 
 const S = {
   en: {
-    navDash: "Device", navCustom: "Customize", navApps: "Apps", navFiles: "Files", navLogs: "Logs", donate: "Support",
+    navDash: "Device", navCustom: "Customize", navApps: "Apps", navFiles: "Files", navLogs: "Logs", donate: "Support", refresh: "Refresh", appsSeg: "Apps", systemData: "System & data", freeSeg: "Free", topApps: "Largest apps", region: "Region", build: "Build",
     dashTitle: "Device", customTitle: "Customize", customSub: "yuri picks the tools that work on your iPhone right now.",
     noDevice: "No iPhone found. Connect it with a cable, unlock it and tap Trust.",
     model: "Model", ios: "iOS", storage: "Storage", battery: "Battery", cycles: "Battery cycles", serial: "Serial",
@@ -29,7 +29,7 @@ const S = {
     t_sources: "Tweak sources", t_sources_d: "Open the SayoSign tweak repo.",
   },
   ru: {
-    navDash: "Устройство", navCustom: "Кастомизация", navApps: "Приложения", navFiles: "Файлы", navLogs: "Логи", donate: "Поддержать",
+    navDash: "Устройство", navCustom: "Кастомизация", navApps: "Приложения", navFiles: "Файлы", navLogs: "Логи", donate: "Поддержать", refresh: "Обновить", appsSeg: "Приложения", systemData: "Система и данные", freeSeg: "Свободно", topApps: "Самые большие", region: "Регион", build: "Сборка",
     dashTitle: "Устройство", customTitle: "Кастомизация", customSub: "yuri сам подбирает инструменты, которые работают на твоём айфоне прямо сейчас.",
     noDevice: "Айфон не найден. Подключи кабелем, разблокируй и нажми «Доверять».",
     model: "Модель", ios: "iOS", storage: "Память", battery: "Батарея", cycles: "Циклы батареи", serial: "Серийный номер",
@@ -56,7 +56,7 @@ const S = {
     t_sources: "Источники твиков", t_sources_d: "Открыть репозиторий твиков SayoSign.",
   },
   zh: {
-    navDash: "设备", navCustom: "自定义", navApps: "应用", navFiles: "文件", navLogs: "日志", donate: "支持",
+    navDash: "设备", navCustom: "自定义", navApps: "应用", navFiles: "文件", navLogs: "日志", donate: "支持", refresh: "刷新", appsSeg: "应用", systemData: "系统与数据", freeSeg: "可用", topApps: "最大的应用", region: "地区", build: "版本号",
     dashTitle: "设备", customTitle: "自定义", customSub: "yuri 会自动挑选当前 iPhone 可用的工具。",
     noDevice: "未找到 iPhone。请用数据线连接、解锁并点击“信任”。",
     model: "型号", ios: "iOS", storage: "存储", battery: "电池", cycles: "电池循环", serial: "序列号",
@@ -152,64 +152,108 @@ function sideDevice() {
   if (!state.device) { el.innerHTML = `<span class="dot off"></span>${esc(t("noDevice").split(".")[0])}`; return; }
   el.innerHTML = `<b>${esc(state.device.name || "iPhone")}</b><span class="dot"></span>${esc(state.device.connection)} · iOS ${esc(state.device.ios || "?")}`;
 }
+const PHONE_SVG = `<svg viewBox="0 0 86 170" fill="none">
+  <rect x="2" y="2" width="82" height="166" rx="16" fill="var(--panel-2)" stroke="var(--line)" stroke-width="2"/>
+  <rect x="8" y="12" width="70" height="140" rx="6" fill="var(--accent-soft)"/>
+  <rect x="31" y="6" width="24" height="4" rx="2" fill="var(--line)"/>
+  <circle cx="43" cy="160" r="4" fill="var(--line)"/>
+  <path d="M30 70h26M30 82h26M30 94h18" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+</svg>`;
+function spec(l, v) { return v == null || v === "" ? "" : `<div class="spec"><div class="l">${esc(l)}</div><div class="v">${v}</div></div>`; }
 function renderDash() {
   const el = $("#dash");
-  if (!state.device) { el.innerHTML = `<div class="card empty">${esc(t("noDevice"))}</div>`; return; }
+  if (!state.device) { el.innerHTML = `<div class="card pad empty">${esc(t("noDevice"))}</div>`; return; }
   const d = state.dash;
-  if (!d) { el.innerHTML = `<div class="card empty">…</div>`; return; }
+  if (!d) { el.innerHTML = `<div class="card pad empty">…</div>`; return; }
   const jb = d.jailbroken?.state || "stock";
-  const st = d.storage, bat = d.battery;
-  const usedPct = st && st.total ? (st.used / st.total) * 100 : 0;
+  const bat = d.battery;
   el.innerHTML = `
-    <div class="card dash-hero">
-      <div class="phone">📱</div>
-      <div>
-        <h2>${esc(d.name || "iPhone")}</h2>
-        <div class="sub">${esc(d.model || d.product)} · iOS ${esc(d.ios)} (${esc(d.build)})</div>
-        <span class="jb ${jb}">${esc(t(jb))}</span>
+    <div class="card hero">
+      <div class="hero-phone">
+        ${PHONE_SVG}
+        <div class="pname">${esc(d.name || "iPhone")}</div>
+        <div class="pstate ${jb}">${esc(t(jb))}</div>
+      </div>
+      <div class="specs">
+        ${spec(t("model"), `${esc(d.model || "")} <span class="muted mono">${esc(d.product)}</span>`)}
+        ${spec(t("ios"), `${esc(d.ios)} <span class="muted">(${esc(d.build)})</span>`)}
+        ${spec(t("cpu"), esc(d.cpu))}
+        ${spec(t("serial"), `<span class="mono">${esc(d.serial)}</span>`)}
+        ${spec(t("udid"), `<span class="mono">${esc(d.udid)}</span>`)}
+        ${spec(t("wifi"), `<span class="mono">${esc(d.wifi || "—")}</span>`)}
+        ${spec(t("region"), esc(d.regionInfo || "—"))}
+        ${spec("Bluetooth", `<span class="mono">${esc(d.bluetooth || "—")}</span>`)}
       </div>
     </div>
-    <div class="grid">
-      <div class="stat"><div class="k">${t("storage")}</div><div class="v">${st ? fmtSize(st.used) : "—"} <span class="muted small">/ ${st ? fmtSize(st.total) : "—"}</span></div><div class="meter"><i style="width:${usedPct}%"></i></div></div>
-      ${bat ? `<div class="stat"><div class="k">${t("battery")}</div><div class="v">${bat.level ?? "—"}%${bat.charging ? " ⚡" : ""}</div><div class="meter bat"><i style="width:${bat.level || 0}%"></i></div></div>` : ""}
-      ${bat && bat.cycles != null ? `<div class="stat"><div class="k">${t("cycles")}</div><div class="v">${bat.cycles}${bat.health ? ` · ${bat.health}% ${t("health")}` : ""}</div></div>` : ""}
-    </div>
+
     <div class="card" style="margin-top:14px">
-      <dl class="kv2">
-        <dt>${t("model")}</dt><dd>${esc(d.model || "")} <span class="muted mono">${esc(d.product)}</span></dd>
-        <dt>${t("cpu")}</dt><dd>${esc(d.cpu)}</dd>
-        <dt>${t("serial")}</dt><dd class="mono">${esc(d.serial)}</dd>
-        <dt>${t("udid")}</dt><dd class="mono">${esc(d.udid)}</dd>
-        <dt>${t("wifi")}</dt><dd class="mono">${esc(d.wifi || "—")}</dd>
-      </dl>
+      <div class="card-h"><span>${esc(t("storage"))}</span><span class="muted" id="st-sum"></span></div>
+      <div style="padding:16px 18px"><div id="storage-box" class="muted small">…</div></div>
+    </div>
+
+    <div class="statrow" style="margin-top:14px">
+      ${bat ? `<div class="card mini"><div class="l">${t("battery")}</div><div class="v">${bat.level ?? "—"}%${bat.charging ? " ⚡" : ""}</div><div class="meter bat"><i style="width:${bat.level || 0}%"></i></div></div>` : ""}
+      ${bat && bat.cycles != null ? `<div class="card mini"><div class="l">${t("cycles")}</div><div class="v">${bat.cycles}</div><div class="sub">${bat.health ? bat.health + "% " + t("health") : ""}</div></div>` : ""}
+      <div class="card mini"><div class="l">${t("navApps")}</div><div class="v" id="appcount">—</div></div>
     </div>`;
+  fillStorage();
+}
+async function fillStorage() {
+  const box = $("#storage-box"); if (!box) return;
+  try {
+    const s = await api(`/api/storage?udid=${encodeURIComponent(state.device.udid)}`);
+    const pct = (n) => (s.total ? (n / s.total) * 100 : 0);
+    const seg = (v, c) => v > 0 ? `<span style="width:${pct(v)}%;background:${c}"></span>` : "";
+    box.innerHTML = `
+      <div class="stbar">${seg(s.apps, "var(--s-apps)")}${seg(s.other, "var(--s-other)")}</div>
+      <div class="stlegend">
+        <div class="it"><span class="sw" style="background:var(--s-apps)"></span><b>${t("appsSeg")}</b> <span class="g">${fmtSize(s.apps)}</span></div>
+        <div class="it"><span class="sw" style="background:var(--s-other)"></span><b>${t("systemData")}</b> <span class="g">${fmtSize(s.other)}</span></div>
+        <div class="it"><span class="sw" style="background:var(--s-free);border:1px solid var(--line)"></span><b>${t("freeSeg")}</b> <span class="g">${fmtSize(s.free)}</span></div>
+      </div>`;
+    const sum = $("#st-sum"); if (sum) sum.textContent = `${fmtSize(s.total - s.free)} / ${fmtSize(s.total)}`;
+    const ac = $("#appcount"); if (ac) ac.textContent = s.appCount;
+  } catch { box.textContent = "—"; }
 }
 
 // ---------- customization ----------
+const IC = (p) => `<svg class="i" viewBox="0 0 24 24">${p}</svg>`;
+const ICONS = {
+  rename: '<path d="M4 20h16M6 15l9-9 3 3-9 9H6z"/>',
+  battery: '<rect x="3" y="8" width="16" height="9" rx="2"/><path d="M21 11v3"/><rect x="5.5" y="10.5" width="7" height="4" rx="1" fill="currentColor" stroke="none"/>',
+  install: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
+  files: '<path d="M3.5 7.5a2 2 0 0 1 2-2h4l2 2.5h7a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/>',
+  logs: '<path d="M5 3.5h9l5 5v12H5zM13.5 3.5v5h5M8 13h8M8 16.5h8"/>',
+  sign: '<path d="M4 7l8-4 8 4v6c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9z"/><path d="M9 12l2 2 4-4"/>',
+  restart: '<path d="M20 11a8 8 0 1 0-.9 4.5"/><path d="M20 4.5V11h-6.5"/>',
+  respring: '<path d="M12 3v3M12 18v3M5 12H2M22 12h-3M6 6l-2-2M20 20l-2-2M18 6l2-2M4 20l2-2"/><circle cx="12" cy="12" r="3.5"/>',
+  tweak: '<path d="M14 4a3 3 0 0 1 3 3v2h2a1 1 0 0 1 1 1v3a2.5 2.5 0 0 0 0 5v1a1 1 0 0 1-1 1h-3v-2a2.5 2.5 0 0 0-5 0v2H7a1 1 0 0 1-1-1v-3a2.5 2.5 0 0 0 0-5V8a1 1 0 0 1 1-1h2V7a3 3 0 0 1 3-3z"/>',
+  sources: '<path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5zM20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/>',
+};
 const TOOLS = [
-  { id: "rename", icon: "✏️", need: "any", run: toolRename },
-  { id: "battery", icon: "🔋", need: "any", run: () => go("dash") },
-  { id: "install", icon: "📥", need: "any", run: () => go("apps") },
-  { id: "files", icon: "🗂️", need: "any", run: () => go("files") },
-  { id: "logs", icon: "📜", need: "any", run: () => go("logs") },
-  { id: "sign", icon: "🎀", need: "any", run: () => open("https://github.com/murk-sus/SayoSign", "_blank") },
-  { id: "restart", icon: "🔄", need: "any", run: toolRestart },
-  { id: "respring", icon: "💫", need: "jb", run: () => toast("respring — " + t("needJb")) },
-  { id: "tweak", icon: "🧩", need: "jb", run: () => toast(".deb — " + t("needJb")) },
-  { id: "sources", icon: "📚", need: "jb", run: () => open("https://github.com/murk-sus/VoidGram-plugins", "_blank") },
+  { id: "rename", need: "any", run: toolRename },
+  { id: "battery", need: "any", run: () => go("dash") },
+  { id: "install", need: "any", run: () => go("apps") },
+  { id: "files", need: "any", run: () => go("files") },
+  { id: "logs", need: "any", run: () => go("logs") },
+  { id: "sign", need: "any", run: () => open("https://github.com/murk-sus/SayoSign", "_blank") },
+  { id: "restart", need: "any", run: toolRestart },
+  { id: "respring", need: "jb", run: () => toast("respring — " + t("needJb")) },
+  { id: "tweak", need: "jb", run: () => toast(".deb — " + t("needJb")) },
+  { id: "sources", need: "jb", run: () => open("https://github.com/murk-sus/VoidGram-plugins", "_blank") },
 ];
 function go(view) { document.querySelector(`.nav[data-view=${view}]`).click(); }
 function renderCustom() {
   const jb = state.dash?.jailbroken?.state || "stock";
   const unlocked = jb === "jailbroken" || jb === "trollstore";
-  $("#custom-banner").innerHTML = `<div class="banner ${jb}"><span class="big">${jb === "stock" ? "📱" : "🔓"}</span><span>${esc(jb === "stock" ? t("bannerStock") : jb === "trollstore" ? t("bannerTroll") : t("bannerJb"))}</span></div>`;
+  $("#custom-banner").innerHTML = `<div class="banner ${jb}">${IC(jb === "stock" ? '<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><line x1="11" y1="18.5" x2="13" y2="18.5"/>' : '<path d="M7 11V8a5 5 0 0 1 9.5-2"/><rect x="5" y="11" width="14" height="10" rx="2"/>')}<span>${esc(jb === "stock" ? t("bannerStock") : jb === "trollstore" ? t("bannerTroll") : t("bannerJb"))}</span></div>`;
   $("#custom-grid").innerHTML = TOOLS.map((tool) => {
     const locked = tool.need === "jb" && !unlocked;
     return `<button class="tool ${locked ? "locked" : ""}" data-tool="${tool.id}">
-      <div class="ic">${tool.icon}</div>
+      <div class="tic">${IC(ICONS[tool.id])}</div>
       <h3>${esc(t("t_" + tool.id))}</h3>
       <p>${esc(t("t_" + tool.id + "_d"))}</p>
-      ${locked ? `<span class="lock">🔒 ${esc(t("needJb"))}</span>` : ""}
+      ${locked ? `<span class="lock">${IC('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>')} ${esc(t("needJb"))}</span>` : ""}
     </button>`;
   }).join("");
 }
@@ -244,8 +288,9 @@ async function loadApps() {
 function renderApps() {
   const q = $("#apps-search").value.toLowerCase();
   const list = state.apps.filter((a) => !q || a.name.toLowerCase().includes(q) || a.bundleId.toLowerCase().includes(q));
-  $("#apps-list").innerHTML = list.length ? list.map((a) => `<div class="app-row"><div><b>${esc(a.name)}</b><span class="mono muted small">${esc(a.bundleId)} · ${esc(a.version || "")}</span></div>
-    ${state.appKind === "User" ? `<button class="danger" data-un="${esc(a.bundleId)}" data-name="${esc(a.name)}">${t("uninstall")}</button>` : ""}</div>`).join("") : `<div class="empty">—</div>`;
+  $("#apps-list").innerHTML = list.length ? list.map((a) => `<div class="app-row"><div><b>${esc(a.name)}</b><span class="mono muted small">${esc(a.bundleId)}</span></div>
+    <span class="sz muted small">${esc(a.version || "")}</span>
+    ${state.appKind === "User" ? `<button class="danger" data-un="${esc(a.bundleId)}" data-name="${esc(a.name)}">${t("uninstall")}</button>` : "<span></span>"}</div>`).join("") : `<div class="empty">—</div>`;
 }
 $("#apps-search").addEventListener("input", renderApps);
 $("#apps-list").addEventListener("click", async (e) => {
@@ -287,13 +332,15 @@ async function loadFiles(path) {
     state.path = r.path; renderFiles(r.entries);
   } catch (e) { toast(e.message); }
 }
+const FI_DIR = IC('<path d="M3.5 7.5a2 2 0 0 1 2-2h4l2 2.5h7a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/>');
+const FI_FILE = IC('<path d="M6 3.5h8l4 4v13H6zM14 3.5v4h4"/>');
 function renderFiles(entries) {
   const parts = state.path.split("/").filter(Boolean);
-  $("#crumbs").innerHTML = `<a data-p="/">💾</a>` + parts.map((p, i) => ` <span>/</span> <a data-p="/${parts.slice(0, i + 1).join("/")}">${esc(p)}</a>`).join("");
+  $("#crumbs").innerHTML = `<a data-p="/">${IC('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/>')}</a>` + parts.map((p, i) => `<span class="sep">/</span><a data-p="/${parts.slice(0, i + 1).join("/")}">${esc(p)}</a>`).join("");
   $("#files-list").innerHTML = entries.length ? entries.map((e) => {
     const full = (state.path === "/" ? "" : state.path) + "/" + e.name;
     return `<div class="file-row ${e.dir ? "dir" : ""}" ${e.dir ? `data-dir="${esc(full)}"` : ""}>
-      <span class="fi">${e.dir ? "📁" : "📄"}</span>
+      <span class="fi">${e.dir ? FI_DIR : FI_FILE}</span>
       <span>${esc(e.name)}</span>
       <span class="muted small">${e.dir ? "" : fmtSize(e.size)}</span>
       ${e.dir ? "<span></span>" : `<a class="dl" href="/api/download?udid=${encodeURIComponent(state.device.udid)}&path=${encodeURIComponent(full)}&token=${encodeURIComponent(token)}">${t("download")}</a>`}
@@ -326,6 +373,7 @@ $("#log-toggle").addEventListener("click", () => {
 $("#log-clear").addEventListener("click", () => ($("#logs").innerHTML = ""));
 
 // ---------- boot ----------
+$("#dash-refresh").addEventListener("click", refresh);
 applyLang();
 poll();
 setInterval(() => { if (!document.hidden) poll(); }, 5000);

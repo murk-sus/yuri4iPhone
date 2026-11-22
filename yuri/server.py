@@ -47,6 +47,9 @@ class App:
     async def apps(self, request):
         return web.json_response(await device.apps(self.udid(request), request.query.get("kind", "User")))
 
+    async def storage(self, request):
+        return web.json_response(await device.storage_breakdown(self.udid(request)))
+
     async def files(self, request):
         return web.json_response(await device.browse(self.udid(request), request.query.get("path", "/"),
                                                      request.query.get("bundle") or None))
@@ -170,6 +173,7 @@ class App:
         r.add_get("/api/devices", self.devices)
         r.add_get("/api/dashboard", self.dashboard)
         r.add_get("/api/apps", self.apps)
+        r.add_get("/api/storage", self.storage)
         r.add_get("/api/files", self.files)
         r.add_get("/api/download", self.download)
         r.add_post("/api/rename", self.rename)
